@@ -1,16 +1,15 @@
 import {
-    State, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition
-} from "ui-router-core";
-export { deepStateRedirect };
+    StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition
+} from "@uirouter/core";
 
-declare module "ui-router-core" {
+declare module "@uirouter/core" {
   interface StateDeclaration {
     dsr?: any;
     deepStateRedirect?: any;
   }
 }
 
-function deepStateRedirect($uiRouter: UIRouter): any {
+function DSRPlugin($uiRouter: UIRouter): any {
   let $transitions = $uiRouter.transitionService;
   let $state = $uiRouter.stateService;
 
@@ -55,7 +54,7 @@ function deepStateRedirect($uiRouter: UIRouter): any {
     return { params: params, default: defaultTarget, fn: fn };
   }
 
-  function paramsEqual(state: State, transParams: RawParams, schemaMatchFn?: (param?: Param) => boolean, negate = false) {
+  function paramsEqual(state: StateObject, transParams: RawParams, schemaMatchFn?: (param?: Param) => boolean, negate = false) {
     schemaMatchFn = schemaMatchFn || (() => true);
     let schema = state.parameters({ inherit: true }).filter(schemaMatchFn);
     return function (redirect) {
@@ -90,7 +89,7 @@ function deepStateRedirect($uiRouter: UIRouter): any {
     redirect = config.fn(transition, redirect);
     if (redirect && redirect.state() === transition.to()) return;
 
-    return redirect
+    return redirect;
   }
 
   function getDeepStateRedirect(stateOrName: StateOrName, params: RawParams) {
@@ -118,6 +117,8 @@ function deepStateRedirect($uiRouter: UIRouter): any {
   }
 
   return {
+    name: 'deep-state-redirect',
+
     reset: function(state: StateOrName, params?: RawParams) {
       if (!state) {
         $state.get().forEach(state => delete state.$$state()['$dsr']);
@@ -131,6 +132,8 @@ function deepStateRedirect($uiRouter: UIRouter): any {
 
     getRedirect: function (state: StateOrName, params?: RawParams) {
       return getDeepStateRedirect(state, params);
-    }
-  }
+    },
+  };
 }
+
+export { DSRPlugin };
