@@ -16,3 +16,4 @@ tsconfig.json
 tsconfig.**.json
 webpack.config.js
 rollup.config.js
+karma.conf.js

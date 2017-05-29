@@ -1,11 +1,12 @@
 {
   "name": "@uirouter/dsr",
   "description": "UI-Router Deep State Redirect: redirect to the most recently activated child state",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "clean": "shx rm -rf lib lib-esm bundles",
     "build": "npm run compile && rollup -c && rollup -c --environment MINIFY",
     "compile": "npm run clean && tsc && tsc -m es6 --outDir lib-esm",
+    "prepare": "npm run build",
     "test": "karma start",
     "watch": "run-p watch:*",
     "watch:buildjs": "tsc -w",
