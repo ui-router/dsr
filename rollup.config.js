@@ -32,7 +32,7 @@ var extension = MINIFY ? ".min.js" : ".js";
 const CONFIG = {
   moduleName: pkg.name,
   entry: 'lib-esm/index.js',
-  dest: 'bundles/ui-router-dsr' + extension,
+  dest: '_bundles/ui-router-dsr' + extension,
   external: '@uirouter/core',
   globals: { '@uirouter/core': '@uirouter/core' },
   
