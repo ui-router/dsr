@@ -2,7 +2,7 @@ import {
     StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition
 } from "@uirouter/core";
 
-declare module "@uirouter/core" {
+declare module "@uirouter/core/lib/state/interface" {
   interface StateDeclaration {
     dsr?: any;
     deepStateRedirect?: any;
