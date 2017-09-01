@@ -86,7 +86,14 @@ function DSRPlugin($uiRouter: UIRouter): any {
 
     let config = getConfig(transition.to());
     let redirect = getDeepStateRedirect(transition.to(), transition.params());
-    redirect = config.fn(transition, redirect);
+    const _redirect = config.fn(transition, redirect);
+
+    redirect = Object.prototype.toString.call(_redirect) === '[object Object]'
+      ? _redirect
+      : !!_redirect
+        ? redirect // trust/retain the original redirection if config.fn returns truthy
+        : transition.targetState(); // no redirection if config.fn returns falsey
+
     if (redirect && redirect.state() === transition.to()) return;
 
     return redirect;
