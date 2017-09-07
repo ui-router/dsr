@@ -106,7 +106,7 @@ function DSRPlugin($uiRouter: UIRouter): any {
 
     if (config.params) {
       var predicate = paramsEqual($$state, params, config.params, false);
-      let match = $$state['$dsr'] && $$state['$dsr'].filter(predicate).pop(); // latest record
+      let match = $$state['$dsr'] && $$state['$dsr'].filter(predicate)[0];
       dsrTarget = match && match.target;
     } else {
       dsrTarget = $$state['$dsr'];
