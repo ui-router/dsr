@@ -1,0 +1,24 @@
+# master only
+build
+bundles
+build_packages
+site
+
+# common
+**/.*
+*~
+node_modules
+bower_components
+lib
+lib-esm
+_bundles
+
+# webstorm files
+.idea
+idea-out
+*.iml
+*.ipr
+*.iws
+
+# generate doc to _doc; copy to proper gh-pages dir
+_doc
