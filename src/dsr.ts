@@ -1,81 +1,124 @@
 import {
-    StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition
+  StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition, UIRouterPlugin,
+  TransitionOptions
 } from "@uirouter/core";
 
 declare module "@uirouter/core/lib/state/interface" {
   interface StateDeclaration {
-    dsr?: any;
-    deepStateRedirect?: any;
+    dsr?: DSRProp;
+    deepStateRedirect?: DSRProp;
   }
 }
 
-function DSRPlugin($uiRouter: UIRouter): any {
-  let $transitions = $uiRouter.transitionService;
-  let $state = $uiRouter.stateService;
+declare module "@uirouter/core/lib/state/stateObject" {
+  interface StateObject {
+    $dsr: TargetState | RecordedDSR[]
+  }
+}
 
-  $transitions.onRetain({ retained: getDsr }, recordDeepState);
-  $transitions.onEnter({ entering: getDsr }, recordDeepState);
-  $transitions.onBefore({ to: getDsr }, deepStateRedirect);
+export type ParamPredicate = (param: Param) => boolean;
+export type DSRProp = boolean | string | DSRFunction | DSRConfigObj;
+export type DSRFunction = (...args) => boolean | DSRTarget;
+export interface DSRTarget {
+  state?: StateOrName;
+  params?: RawParams;
+  options?: TransitionOptions
+}
 
-  function getDsr(state: StateDeclaration) {
+export interface DSRConfigObj {
+  default?: string | DSRTarget;
+  params?: boolean | string[];
+  fn?: DSRFunction;
+}
+
+interface DSRConfig {
+  default?: TargetState;
+  params?: ParamPredicate;
+  fn?: (transition: Transition, something: any) => any;
+}
+
+export interface RecordedDSR {
+  target: TargetState;
+  triggerParams: object;
+}
+
+export interface IDSRPlugin extends UIRouterPlugin {
+  reset(state: StateOrName, params?: RawParams): void;
+  getRedirect(state: StateOrName, params?: RawParams): TargetState;
+}
+
+function DSRPlugin($uiRouter: UIRouter): IDSRPlugin {
+  const $transitions = $uiRouter.transitionService;
+  const $state = $uiRouter.stateService;
+
+  $transitions.onRetain({ retained: state => !!getDsrProp(state.self) }, recordDeepState);
+  $transitions.onEnter({ entering: state => !!getDsrProp(state.self) }, recordDeepState);
+  $transitions.onBefore({ to: state => !!getDsrProp(state.self) }, deepStateRedirect);
+
+  function getDsrProp(state: StateDeclaration): DSRProp {
     return state.deepStateRedirect || state.dsr;
   }
 
-  function getConfig(state: StateDeclaration) {
-    let dsrProp: any = getDsr(state);
-    let propType: string = typeof dsrProp;
-    if (propType === 'undefined') return;
+  function getConfig(state: StateDeclaration): DSRConfig {
+    const dsrProp: DSRProp = getDsrProp(state);
+    if (typeof dsrProp === 'undefined') return;
 
-    let params;
-    let defaultTarget = propType === 'string' ? dsrProp : undefined;
-    let fn: Function = propType === 'function' ? dsrProp : undefined;
+    let params: ParamPredicate;
+    let defaultTarget: TargetState = typeof dsrProp === 'string' ? $state.target(dsrProp) : undefined;
+    let fn: DSRFunction = typeof dsrProp === 'function' ? dsrProp : undefined;
 
-    if (propType === 'object') {
+    if (typeof dsrProp === 'object') {
       fn = dsrProp.fn;
-      let defaultType = typeof dsrProp.default;
-      if (defaultType === 'object') {
+      if (typeof dsrProp.default === 'object') {
         defaultTarget = $state.target(dsrProp.default.state, dsrProp.default.params, dsrProp.default.options);
-      } else if (defaultType === 'string') {
+      } else if (typeof dsrProp.default === 'string') {
         defaultTarget = $state.target(dsrProp.default);
       }
-      if (dsrProp.params === true) {
-        params = function () {
-          return true;
-        }
-      } else if (Array.isArray(dsrProp.params)) {
-        params = function (param: Param) {
-          return dsrProp.params.indexOf(param.id) !== -1;
-        }
+
+      const paramsProp = (dsrProp as DSRConfigObj).params;
+
+      if (paramsProp === true) {
+        params = () => true
+      } else if (Array.isArray(paramsProp)) {
+        params = (param: Param) => paramsProp.indexOf(param.id) !== -1;
       }
     }
 
-    fn = fn || ((transition, target) => target);
+    fn = fn || ((transition: Transition, target: TargetState) => target);
 
-    return { params: params, default: defaultTarget, fn: fn };
+    return { default: defaultTarget, params, fn };
   }
 
-  function paramsEqual(state: StateObject, transParams: RawParams, schemaMatchFn?: (param?: Param) => boolean, negate = false) {
-    schemaMatchFn = schemaMatchFn || (() => true);
-    let schema = state.parameters({ inherit: true }).filter(schemaMatchFn);
+  function paramsEqual(
+      state: StateObject,
+      transParams: RawParams,
+      paramPredicate: ParamPredicate = () => true,
+      negate = false,
+  ): (redirect: any) => boolean {
+    const schema = state.parameters({ inherit: true }).filter(paramPredicate);
+
     return function (redirect) {
-      let equals = Param.equals(schema, redirect.triggerParams, transParams);
+      const equals = Param.equals(schema, redirect.triggerParams, transParams);
       return negate ? !equals : equals;
     }
   }
 
-  function recordDeepState(transition, state) {
-    let paramsConfig = getConfig(state).params;
+  function recordDeepState(transition: Transition, state: StateDeclaration): void {
+    const paramsConfig = getConfig(state).params;
+    const _state = state.$$state();
 
     transition.promise.then(function () {
-      let transTo = transition.to();
-      let transParams = transition.params();
-      let recordedDsrTarget = $state.target(transTo, transParams);
+      const transTo = transition.to();
+      const transParams = transition.params();
+      const recordedDsrTarget = $state.target(transTo, transParams);
 
       if (paramsConfig) {
-        state.$dsr = (state.$dsr || []).filter(paramsEqual(transTo.$$state(), transParams, undefined, true));
-        state.$dsr.push({ triggerParams: transParams, target: recordedDsrTarget });
+        const recordedDSR = (_state.$dsr as RecordedDSR[]) || [];
+        const predicate = paramsEqual(transTo.$$state(), transParams, undefined, true);
+        _state.$dsr = recordedDSR.filter(predicate);
+        _state.$dsr.push({ triggerParams: transParams, target: recordedDsrTarget });
       } else {
-        state.$dsr = recordedDsrTarget;
+        _state.$dsr = recordedDsrTarget;
       }
     });
   }
@@ -92,17 +135,18 @@ function DSRPlugin($uiRouter: UIRouter): any {
     return redirect;
   }
 
-  function getDeepStateRedirect(stateOrName: StateOrName, params: RawParams) {
-    let state = $state.get(stateOrName);
-    let dsrTarget, config = getConfig(state);
-    let $$state = state.$$state();
+  function getDeepStateRedirect(stateOrName: StateOrName, params: RawParams): TargetState {
+    const _state = $state.get(stateOrName);
+    const state = _state && _state.$$state();
+    const config: DSRConfig = getConfig(_state);
+    let dsrTarget: TargetState;
 
     if (config.params) {
-      var predicate = paramsEqual($$state, params, config.params, false);
-      let match = $$state['$dsr'] && $$state['$dsr'].filter(predicate)[0];
+      const predicate = paramsEqual(state, params, config.params, false);
+      const match = state.$dsr && (state.$dsr as RecordedDSR[]).filter(predicate)[0];
       dsrTarget = match && match.target;
     } else {
-      dsrTarget = $$state['$dsr'];
+      dsrTarget = state.$dsr as TargetState;
     }
 
     dsrTarget = dsrTarget || config.default;
@@ -119,14 +163,16 @@ function DSRPlugin($uiRouter: UIRouter): any {
   return {
     name: 'deep-state-redirect',
 
+    dispose() {},
+
     reset: function(state: StateOrName, params?: RawParams) {
       if (!state) {
-        $state.get().forEach(state => delete state.$$state()['$dsr']);
+        $state.get().forEach(state => delete state.$$state().$dsr);
       } else if (!params) {
-        delete $state.get(state).$$state()['$dsr']
+        delete $state.get(state).$$state().$dsr;
       } else {
-        var $$state = $state.get(state).$$state();
-        $$state['$dsr'] = $$state['$dsr'].filter(paramsEqual($$state, params, null, true));
+        const $$state = $state.get(state).$$state();
+        $$state.$dsr = ($$state.$dsr as RecordedDSR[]).filter(paramsEqual($$state, params, undefined, true));
       }
     },
 

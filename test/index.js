@@ -2,9 +2,9 @@
 // current directory and all subdirectories
 
 require('core-js');
-require('ui-router-core');
-require('ui-router-core/lib/justjs');
-require('../src/deepStateRedirect');
+require('@uirouter/core');
+require('@uirouter/core/lib/vanilla');
+require('../src/dsr');
 
 var testsContext = require.context(".", true, /Spec$/);
 testsContext.keys().forEach(testsContext);

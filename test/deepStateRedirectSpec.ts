@@ -1,12 +1,14 @@
 import { getTestGoFn, addCallbacks, resetTransitionLog, pathFrom } from "./util"
-import { UIRouter, StateService } from "ui-router-core";
-import { deepStateRedirect } from "../src/deepStateRedirect"
+import {
+  UIRouter, StateService, StateDeclaration, servicesPlugin, memoryLocationPlugin, StateParams
+} from "@uirouter/core";
+import { DSRPlugin } from "../src/dsr"
 
 const equalityTester = (first, second) =>
   Object.keys(second).reduce((acc, key) =>
       first[key] == second[key] && acc, true);
 
-function getDSRStates() {
+function getDSRStates(): StateDeclaration[] {
   // This function effectively returns the default DSR state at runtime
   function p7DSRFunction(transition, pendingRedirect) {
     // allow standard DSR behavior by returning pendingRedirect $dsr$.redirect has a state set
@@ -66,10 +68,12 @@ describe('deepStateRedirect', function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
     router = new UIRouter();
-    router.urlRouterProvider.otherwise('/');
+    router.plugin(servicesPlugin);
+    router.plugin(memoryLocationPlugin);
+    $deepStateRedirect = router.plugin(DSRPlugin);
+
+    router.urlService.rules.otherwise('/');
     $state = router.stateService;
-    $deepStateRedirect = deepStateRedirect(router);
-    router.stateRegistry.stateQueue.autoFlush($state);
 
     testGo = getTestGoFn(router);
 
@@ -158,7 +162,7 @@ describe('deepStateRedirect', function () {
     it("should redirect only when params match", async function (done) {
       await $state.go("p1", { param1: "foo", param2: "foo2" });
       expect($state.current.name).toEqual("p1");
-      expect($state.params).toEqual({ "#": null, param1: "foo", param2: "foo2" });
+      expect($state.params).toEqual({ "#": null, param1: "foo", param2: "foo2" } as any);
 
       await $state.go(".child");
       expect($state.current.name).toEqual("p1.child");
@@ -204,7 +208,7 @@ describe('deepStateRedirect', function () {
       await $state.go("p2", { param1: "foo", param2: "foo2" });
 
       expect($state.current.name).toEqual("p2");
-      expect($state.params).toEqual({ param1: "foo", param2: "foo2" });
+      expect($state.params).toEqual({ param1: "foo", param2: "foo2" } as any);
 
       await $state.go(".child");
       expect($state.current.name).toEqual("p2.child");
@@ -292,7 +296,7 @@ describe('deepStateRedirect', function () {
 
     it("should provide default parameters", async function (done) {
       await testGo("p5", undefined, { redirect: 'p5.child' });
-      expect($state.params).toEqual({ p5param: "1" });
+      expect($state.params).toEqual({ p5param: "1" } as any);
 
       done();
     });
