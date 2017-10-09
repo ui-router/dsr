@@ -31,7 +31,7 @@ export interface DSRConfigObj {
   fn?: DSRFunction;
 }
 
-export interface DSRConfig {
+interface _DSRConfig {
   default?: TargetState;
   params?: ParamPredicate;
   fn?: (transition: Transition, something: any) => any;
@@ -82,7 +82,7 @@ class DSRPlugin implements UIRouterPlugin {
     return state.deepStateRedirect || state.dsr;
   }
 
-  private getConfig(state: StateDeclaration): DSRConfig {
+  private getConfig(state: StateDeclaration): _DSRConfig {
     const { $state } = this;
     const dsrProp: DSRProp = this.getDsrProp(state);
     if (typeof dsrProp === 'undefined') return;
@@ -151,9 +151,11 @@ class DSRPlugin implements UIRouterPlugin {
     let opts = transition.options();
     if (opts['ignoreDsr'] || (opts.custom && opts.custom.ignoreDsr)) return;
 
-    let config = this.getConfig(transition.to());
-    let redirect = this.getDeepStateRedirect(transition.to(), transition.params());
+    let config: _DSRConfig = this.getConfig(transition.to());
+    let redirect: TargetState = this.getDeepStateRedirect(transition.to(), transition.params());
+
     redirect = config.fn(transition, redirect);
+
     if (redirect && redirect.state() === transition.to()) return;
 
     return redirect;
@@ -163,7 +165,7 @@ class DSRPlugin implements UIRouterPlugin {
     const { $state } = this;
     const _state = $state.get(stateOrName);
     const state = _state && _state.$$state();
-    const config: DSRConfig = this.getConfig(_state);
+    const config: _DSRConfig = this.getConfig(_state);
     let dsrTarget: TargetState;
 
     if (config.params) {
