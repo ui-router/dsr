@@ -1,46 +1,9 @@
 import {
   StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition, UIRouterPlugin,
-  TransitionOptions, TransitionService, StateService
+  TransitionService, StateService
 } from "@uirouter/core";
 
-declare module "@uirouter/core/lib/state/interface" {
-  interface StateDeclaration {
-    dsr?: DSRProp;
-    deepStateRedirect?: DSRProp;
-  }
-}
-
-declare module "@uirouter/core/lib/state/stateObject" {
-  interface StateObject {
-    $dsr: TargetState | RecordedDSR[]
-  }
-}
-
-export type ParamPredicate = (param: Param) => boolean;
-export type DSRProp = boolean | string | DSRFunction | DSRConfigObj;
-export type DSRFunction = (...args) => boolean | DSRTarget;
-export interface DSRTarget {
-  state?: StateOrName;
-  params?: RawParams;
-  options?: TransitionOptions
-}
-
-export interface DSRConfigObj {
-  default?: string | DSRTarget;
-  params?: boolean | string[];
-  fn?: DSRFunction;
-}
-
-interface _DSRConfig {
-  default?: TargetState;
-  params?: ParamPredicate;
-  fn?: (transition: Transition, something: any) => any;
-}
-
-export interface RecordedDSR {
-  target: TargetState;
-  triggerParams: object;
-}
+import { _DSRConfig, DSRConfigObj, DSRFunction, DSRProp, ParamPredicate, RecordedDSR } from './interface';
 
 class DSRPlugin implements UIRouterPlugin {
   name = 'deep-state-redirect';
@@ -62,7 +25,22 @@ class DSRPlugin implements UIRouterPlugin {
     this.hookDeregFns.forEach(fn => fn());
   }
 
-  reset(state: StateOrName, params?: RawParams): void {
+  /**
+   * Resets deep state redirect
+   *
+   * A deep state is recorded for each DSR state.
+   * This function resets recorded deep state redirect(s) to the initial value.
+   *
+   * If called with no parameters, the redirects for all states are reset.
+   *
+   * If called with a `state` parameter, the redirect for that state is reset.
+   *
+   * If called with `state` and `params` parameters, the redirect for that state and set of parameter values is reset.
+   *
+   * @param state (optional) the redirect for this state will be reset
+   * @param params (optional) the redirect for the state and parameters will be reset
+   */
+  reset(state?: StateOrName, params?: RawParams): void {
     const { $state } = this;
     if (!state) {
       $state.get().forEach(state => delete state.$$state().$dsr);
@@ -74,6 +52,16 @@ class DSRPlugin implements UIRouterPlugin {
     }
   }
 
+  /**
+   * Returns the recorded redirect
+   *
+   * Returns the recorded redirect for a given DSR `state` (and optionally `params`).
+   *
+   * @param state the DSR state
+   * @param params (optional) the parameter values
+   *
+   * @returns the recorded redirect `TargetState`
+   */
   getRedirect(state: StateOrName, params?: RawParams): TargetState {
     return this.getDeepStateRedirect(state, params);
   }
