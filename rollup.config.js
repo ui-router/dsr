@@ -1,6 +1,5 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 import uglify from 'rollup-plugin-uglify';
-import progress from 'rollup-plugin-progress';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 
 var MINIFY = process.env.MINIFY;
@@ -21,7 +20,6 @@ comment.type === 'comment2' && /@license/i.test(comment.value);
 
 var plugins = [
   nodeResolve({jsnext: true}),
-  progress(),
   sourcemaps(),
 ];
 
@@ -29,13 +27,13 @@ if (MINIFY) plugins.push(uglify(uglifyOpts));
 
 var extension = MINIFY ? ".min.js" : ".js";
 
-const CONFIG = {
+export default {
   moduleName: pkg.name,
   entry: 'lib-esm/index.js',
   dest: '_bundles/ui-router-dsr' + extension,
   external: '@uirouter/core',
   globals: { '@uirouter/core': '@uirouter/core' },
-  
+
 
   sourceMap: true,
   format: 'umd',
@@ -43,5 +41,3 @@ const CONFIG = {
   plugins: plugins,
   banner: banner,
 };
-
-export default CONFIG;
