@@ -28,16 +28,16 @@ if (MINIFY) plugins.push(uglify(uglifyOpts));
 var extension = MINIFY ? ".min.js" : ".js";
 
 export default {
-  moduleName: pkg.name,
-  entry: 'lib-esm/index.js',
-  dest: '_bundles/ui-router-dsr' + extension,
+  input: 'lib-esm/index.js',
+  output: {
+    name: pkg.name,
+    globals: { '@uirouter/core': '@uirouter/core' },
+    sourcemap: true,
+    format: 'umd',
+    exports: 'named',
+    banner: banner,
+    file: '_bundles/ui-router-dsr' + extension,
+  },
   external: '@uirouter/core',
-  globals: { '@uirouter/core': '@uirouter/core' },
-
-
-  sourceMap: true,
-  format: 'umd',
-  exports: 'named',
   plugins: plugins,
-  banner: banner,
 };
