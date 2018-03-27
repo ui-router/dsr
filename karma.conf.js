@@ -10,26 +10,28 @@ module.exports = function (karma) {
     // level of logging
     // possible values: LOG_DISABLE, LOG_ERROR, LOG_WARN, LOG_INFO, LOG_DEBUG
     logLevel: "warn",
-    // possible values: 'dots', 'progress'
-    reporters: 'dots',
+
+    reporters: ['super-dots', 'mocha'],
     colors: true,
+    mochaReporter: {
+      output: 'minimal',
+    },
 
     port: 8080,
 
     // base path, that will be used to resolve files and exclude
     basePath: '.',
 
-    // Start these browsers, currently available:
-    // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
 
     frameworks: ['jasmine'],
 
     plugins: [
       require('karma-webpack'),
       require('karma-sourcemap-loader'),
+      require('karma-super-dots-reporter'),
+      require('karma-mocha-reporter'),
       require('karma-jasmine'),
-      require('karma-phantomjs-launcher'),
       require('karma-chrome-launcher')
     ],
 
