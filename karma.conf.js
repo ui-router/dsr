@@ -22,7 +22,10 @@ module.exports = function (karma) {
     // base path, that will be used to resolve files and exclude
     basePath: '.',
 
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: { base: 'ChromeHeadless', flags: ['--no-sandbox'] }
+    },
 
     frameworks: ['jasmine'],
 
