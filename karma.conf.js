@@ -39,19 +39,18 @@ module.exports = function (karma) {
     ],
 
     webpack: {
+      mode: 'development',
       devtool: 'inline-source-map',
 
       resolve: {
-        modulesDirectories: ['node_modules'],
-        extensions: ['', '.js', '.ts']
+        extensions: ['.js', '.ts']
       },
 
       module: {
-        loaders: [
-          { test: /\.ts$/, loader: "ts-loader" }
+        rules: [
+          { test: /\.ts$/, use: "ts-loader" }
         ]
       },
-
     },
 
     webpackMiddleware: {

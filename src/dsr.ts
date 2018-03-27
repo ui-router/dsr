@@ -1,7 +1,7 @@
 import {
   StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition, UIRouterPlugin,
-  TransitionService, StateService
-} from "@uirouter/core";
+  TransitionService, StateService,
+} from '@uirouter/core';
 
 import { _DSRConfig, DSRConfigObj, DSRFunction, DSRProp, ParamPredicate, RecordedDSR } from './interface';
 
@@ -43,7 +43,7 @@ class DSRPlugin implements UIRouterPlugin {
   reset(state?: StateOrName, params?: RawParams): void {
     const { $state } = this;
     if (!state) {
-      $state.get().forEach(state => delete state.$$state().$dsr);
+      $state.get().forEach(_state => delete _state.$$state().$dsr);
     } else if (!params) {
       delete $state.get(state).$$state().$dsr;
     } else {
@@ -90,13 +90,13 @@ class DSRPlugin implements UIRouterPlugin {
       const paramsProp = (dsrProp as DSRConfigObj).params;
 
       if (paramsProp === true) {
-        params = () => true
+        params = () => true;
       } else if (Array.isArray(paramsProp)) {
         params = (param: Param) => paramsProp.indexOf(param.id) !== -1;
       }
     }
 
-    fn = fn || ((transition: Transition, target: TargetState) => target);
+    fn = fn || ((transition: Transition, target: TargetState) => target) as DSRFunction;
 
     return { default: defaultTarget, params, fn };
   }
@@ -111,7 +111,7 @@ class DSRPlugin implements UIRouterPlugin {
     return (redirect: RecordedDSR) => {
       const equals = Param.equals(schema, redirect.triggerParams, transParams);
       return negate ? !equals : equals;
-    }
+    };
   }
 
   private recordDeepState(transition: Transition, state: StateDeclaration): void {
@@ -136,10 +136,10 @@ class DSRPlugin implements UIRouterPlugin {
   }
 
   private deepStateRedirect(transition: Transition) {
-    let opts = transition.options();
+    const opts = transition.options();
     if (opts['ignoreDsr'] || (opts.custom && opts.custom.ignoreDsr)) return;
 
-    let config: _DSRConfig = this.getConfig(transition.to());
+    const config: _DSRConfig = this.getConfig(transition.to());
     let redirect: TargetState = this.getDeepStateRedirect(transition.to(), transition.params());
 
     redirect = config.fn(transition, redirect);
@@ -168,7 +168,7 @@ class DSRPlugin implements UIRouterPlugin {
 
     if (dsrTarget) {
       // merge original params with deep state redirect params
-      let targetParams = Object.assign({}, params, dsrTarget.params());
+      const targetParams = Object.assign({}, params, dsrTarget.params());
       dsrTarget = $state.target(dsrTarget.state(), targetParams, dsrTarget.options());
     }
 

@@ -1,1 +1,1 @@
-export * from "./dsr";
+export * from './dsr';

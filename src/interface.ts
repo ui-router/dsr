@@ -1,14 +1,14 @@
 
 import { Param, RawParams, StateOrName, TargetState, Transition, TransitionOptions } from '@uirouter/core';
 
-declare module "@uirouter/core/lib/state/interface" {
+declare module '@uirouter/core/lib/state/interface' {
   interface StateDeclaration {
     dsr?: DSRProp;
     deepStateRedirect?: DSRProp;
   }
 }
 
-declare module "@uirouter/core/lib/state/stateObject" {
+declare module '@uirouter/core/lib/state/stateObject' {
   interface StateObject {
     $dsr: TargetState | RecordedDSR[]
   }
