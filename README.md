@@ -1,5 +1,7 @@
 # Deep State Redirect
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ui-router/dsr.svg)](https://greenkeeper.io/)
+
 ### DSR for UI-Router 1.0 &nbsp;[![Build Status](https://travis-ci.org/christopherthielen/deep-state-redirect.svg?branch=master)](https://travis-ci.org/christopherthielen/deep-state-redirect)
 
 With Deep State Redirect, a parent state remembers whatever child state was last activated.
