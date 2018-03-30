@@ -1,0 +1,2 @@
+import './router.config';
+

@@ -1,0 +1,16 @@
+.active {
+    font-weight: bold;
+}
+.container {
+    display: flex;
+    flex-flow: row wrap;
+}
+.container > * {
+    border: 1px solid;
+    padding: 0.5em;
+    margin: 0.5em;
+    flex: 1 1 75px;
+}
+.container > a.active {
+    background: lightgray;
+}
