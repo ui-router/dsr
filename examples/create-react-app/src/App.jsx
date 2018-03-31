@@ -35,7 +35,7 @@ export const states = [
     url: '/:continent',
     component: CountryList,
     resolve: {
-      'countries': ($transition$) => getCountries($transition$.params().continent),
+      'countries': ['$transition$', ($transition$) => getCountries($transition$.params().continent)],
     },
   },
 
@@ -44,7 +44,7 @@ export const states = [
     url: '/:country',
     component: CountryDetail,
     resolve: {
-      'country': ($transition$) => $transition$.params().country,
+      'country': ['$transition$', ($transition$) => $transition$.params().country],
     },
   },
 

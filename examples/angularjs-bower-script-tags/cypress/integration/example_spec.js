@@ -5,46 +5,62 @@ describe('example app', () => {
 
   it('renders links', () => {
     cy.visit('http://localhost:4000/');
-    cy.get('a').contains('home');
     cy.get('a').contains('about');
+    cy.get('a').contains('continentlist');
   });
 
-  it('home state has a textarea', () => {
-    cy.visit('http://localhost:4000');
-    cy.get('[ui-view=home] textarea');
+  it('renders about by default', () => {
+    cy.visit('http://localhost:4000/');
+    cy.contains('This is a trivial Deep State Redirect example app');
   });
 
-  it('retains text entered into the textarea in home', () => {
+  it('can navigate to continentlist', () => {
     cy.visit('http://localhost:4000');
-    cy.get('[ui-view=home] textarea')
-      .type(' The quick brown fox');
+    cy.get('a').contains('continentlist').click();
 
-    cy.get('a').contains('about').click();
-    cy.contains('about state loaded');
-
-    cy.get('a').contains('home').click();
-    cy.contains('home state loaded');
-
-    cy.get('[ui-view=home] textarea')
-      .should('have.value', 'Text entered here is not lost The quick brown fox');
+    cy.contains('Africa');
+    cy.contains('America');
+    cy.contains('Oceania');
   });
 
-  it('retains text entered into the textarea in about', () => {
+  it('can navigate to belize', () => {
     cy.visit('http://localhost:4000');
+    cy.get('a').contains('continentlist').click();
+    cy.get('a').contains('America').click();
+    cy.get('a').contains('Belize').click();
+    cy.get('h3').contains('Belize');
+  });
+
+  it('can navigate to belize and back', () => {
+    cy.visit('http://localhost:4000');
+    cy.get('a').contains('continentlist').click();
+    cy.get('a').contains('America').click();
+    cy.url().should('include', '/America');
+
+    cy.get('a').contains('Belize').click();
+    cy.get('h3').contains('Belize');
+    cy.url().should('include', '/America/Belize');
 
     cy.get('a').contains('about').click();
-    cy.contains('about state loaded');
+    cy.contains('This is a trivial Deep State Redirect example app');
+  });
 
-    cy.get('[ui-view=about] textarea')
-      .type(' The quack white duck');
+  it('dsr sends you back to belize', () => {
+    cy.visit('http://localhost:4000');
+    cy.get('a').contains('continentlist').click();
+    cy.get('a').contains('America').click();
+    cy.url().should('include', '/America');
 
-    cy.get('a').contains('home').click();
-    cy.contains('home state loaded');
+    cy.get('a').contains('Belize').click();
+    cy.url().should('include', '/America/Belize');
+    cy.get('h3').contains('Belize');
 
     cy.get('a').contains('about').click();
-    cy.contains('about state loaded');
+    cy.url().should('include', '/about');
+    cy.contains('This is a trivial Deep State Redirect example app');
 
-    cy.get('[ui-view=about] textarea')
-      .should('have.value', 'Text entered here is not lost The quack white duck');
+    cy.get('a').contains('continentlist').click();
+    cy.url().should('include', '/America/Belize');
+    cy.get('h3').contains('Belize');
   });
 });
