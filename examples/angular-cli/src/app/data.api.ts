@@ -1,3 +1,5 @@
+declare var require;
+
 function getContinents(): Promise<string[]> {
   return Promise.resolve(require('./data.json'))
     .then(countries => countries.map(country => country.continent))

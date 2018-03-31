@@ -29,7 +29,7 @@ export const states = [
     url: '/:continent',
     component: CountryListComponent,
     resolve: {
-      'countries': ($transition$) => getCountries($transition$.params().continent)
+      'countries': ['$transition$', ($transition$) => getCountries($transition$.params().continent)],
     },
   },
 
@@ -38,7 +38,7 @@ export const states = [
     url: '/:country',
     component: CountryDetailComponent,
     resolve: {
-      'country': ($transition$) => $transition$.params().country
+      'country': ['$transition$', ($transition$) => $transition$.params().country],
     },
   },
 
@@ -51,7 +51,7 @@ export const states = [
 
 export function configFn(router: UIRouter) {
   states.forEach(state => router.stateRegistry.register(state));
-  router.urlService.rules.initial({ state: 'home' });
+  router.urlService.rules.initial({ state: 'about' });
   router.plugin(DSRPlugin);
   router.plugin(Visualizer);
 }
