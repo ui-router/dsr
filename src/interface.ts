@@ -1,4 +1,3 @@
-
 import { Param, RawParams, StateOrName, TargetState, Transition, TransitionOptions } from '@uirouter/core';
 
 declare module '@uirouter/core/lib/state/interface' {
@@ -10,7 +9,7 @@ declare module '@uirouter/core/lib/state/interface' {
 
 declare module '@uirouter/core/lib/state/stateObject' {
   interface StateObject {
-    $dsr: TargetState | RecordedDSR[]
+    $dsr: TargetState | RecordedDSR[];
   }
 }
 
@@ -20,7 +19,7 @@ export type DSRFunction = (...args) => boolean | DSRTarget;
 export interface DSRTarget {
   state?: StateOrName;
   params?: RawParams;
-  options?: TransitionOptions
+  options?: TransitionOptions;
 }
 
 export interface DSRConfigObj {

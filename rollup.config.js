@@ -5,8 +5,7 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 var MINIFY = process.env.MINIFY;
 
 var pkg = require('./package.json');
-var banner =
-`/**
+var banner = `/**
  * ${pkg.description}
  * @version v${pkg.version}
  * @link ${pkg.homepage}
@@ -15,17 +14,13 @@ var banner =
 
 var uglifyOpts = { output: {} };
 // retain multiline comment with @license
-uglifyOpts.output.comments = (node, comment) =>
-comment.type === 'comment2' && /@license/i.test(comment.value);
+uglifyOpts.output.comments = (node, comment) => comment.type === 'comment2' && /@license/i.test(comment.value);
 
-var plugins = [
-  nodeResolve({jsnext: true}),
-  sourcemaps(),
-];
+var plugins = [nodeResolve({ jsnext: true }), sourcemaps()];
 
 if (MINIFY) plugins.push(uglify(uglifyOpts));
 
-var extension = MINIFY ? ".min.js" : ".js";
+var extension = MINIFY ? '.min.js' : '.js';
 
 export default {
   input: 'lib-esm/index.js',

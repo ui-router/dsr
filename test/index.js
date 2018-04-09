@@ -5,5 +5,5 @@ require('@uirouter/core');
 require('@uirouter/core/lib/vanilla');
 require('../src/dsr');
 
-var testsContext = require.context(".", true, /Spec$/);
+var testsContext = require.context('.', true, /Spec$/);
 testsContext.keys().forEach(testsContext);

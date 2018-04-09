@@ -1,6 +1,15 @@
 import {
-  StateObject, StateDeclaration, Param, UIRouter, RawParams, StateOrName, TargetState, Transition, UIRouterPlugin,
-  TransitionService, StateService,
+  StateObject,
+  StateDeclaration,
+  Param,
+  UIRouter,
+  RawParams,
+  StateOrName,
+  TargetState,
+  Transition,
+  UIRouterPlugin,
+  TransitionService,
+  StateService,
 } from '@uirouter/core';
 
 import { _DSRConfig, DSRConfigObj, DSRFunction, DSRProp, ParamPredicate, RecordedDSR } from './interface';
@@ -16,9 +25,15 @@ class DSRPlugin implements UIRouterPlugin {
     this.$transitions = $uiRouter.transitionService;
     this.$state = $uiRouter.stateService;
 
-    this.hookDeregFns.push(this.$transitions.onRetain({ retained: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)));
-    this.hookDeregFns.push(this.$transitions.onEnter({ entering: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)));
-    this.hookDeregFns.push(this.$transitions.onBefore({ to: state => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this)));
+    this.hookDeregFns.push(
+      this.$transitions.onRetain({ retained: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)),
+    );
+    this.hookDeregFns.push(
+      this.$transitions.onEnter({ entering: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)),
+    );
+    this.hookDeregFns.push(
+      this.$transitions.onBefore({ to: state => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this)),
+    );
   }
 
   dispose(router: UIRouter): void {
@@ -96,15 +111,16 @@ class DSRPlugin implements UIRouterPlugin {
       }
     }
 
-    fn = fn || ((transition: Transition, target: TargetState) => target) as DSRFunction;
+    fn = fn || (((transition: Transition, target: TargetState) => target) as DSRFunction);
 
     return { default: defaultTarget, params, fn };
   }
 
-  private paramsEqual(state: StateObject,
-                      transParams: RawParams,
-                      paramPredicate: ParamPredicate = () => true,
-                      negate = false,
+  private paramsEqual(
+    state: StateObject,
+    transParams: RawParams,
+    paramPredicate: ParamPredicate = () => true,
+    negate = false,
   ): (redirect: RecordedDSR) => boolean {
     const schema = state.parameters({ inherit: true }).filter(paramPredicate);
 
@@ -119,7 +135,7 @@ class DSRPlugin implements UIRouterPlugin {
     const paramsConfig = this.getConfig(state).params;
     const _state = state.$$state();
 
-    transition.promise.then( () => {
+    transition.promise.then(() => {
       const transTo = transition.to();
       const transParams = transition.params();
       const recordedDsrTarget = $state.target(transTo, transParams);

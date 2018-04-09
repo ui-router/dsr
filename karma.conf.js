@@ -1,7 +1,7 @@
 // Karma configuration file
 var karma = require('karma');
 
-module.exports = function (karma) {
+module.exports = function(karma) {
   var config = {
     singleRun: true,
     autoWatch: false,
@@ -9,7 +9,7 @@ module.exports = function (karma) {
 
     // level of logging
     // possible values: LOG_DISABLE, LOG_ERROR, LOG_WARN, LOG_INFO, LOG_DEBUG
-    logLevel: "warn",
+    logLevel: 'warn',
 
     reporters: ['super-dots', 'mocha'],
     colors: true,
@@ -24,7 +24,7 @@ module.exports = function (karma) {
 
     browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
-      ChromeHeadlessNoSandbox: { base: 'ChromeHeadless', flags: ['--no-sandbox'] }
+      ChromeHeadlessNoSandbox: { base: 'ChromeHeadless', flags: ['--no-sandbox'] },
     },
 
     frameworks: ['jasmine'],
@@ -35,7 +35,7 @@ module.exports = function (karma) {
       require('karma-super-dots-reporter'),
       require('karma-mocha-reporter'),
       require('karma-jasmine'),
-      require('karma-chrome-launcher')
+      require('karma-chrome-launcher'),
     ],
 
     webpack: {
@@ -43,13 +43,11 @@ module.exports = function (karma) {
       devtool: 'inline-source-map',
 
       resolve: {
-        extensions: ['.js', '.ts']
+        extensions: ['.js', '.ts'],
       },
 
       module: {
-        rules: [
-          { test: /\.ts$/, use: "ts-loader" }
-        ]
+        rules: [{ test: /\.ts$/, use: 'ts-loader' }],
       },
     },
 
@@ -62,7 +60,6 @@ module.exports = function (karma) {
     preprocessors: {
       'test/index.js': ['webpack', 'sourcemap'],
     },
-
   };
 
   karma.set(config);
