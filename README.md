@@ -7,7 +7,6 @@
 With Deep State Redirect, a parent state remembers whatever child state was last activated.
 When the user directly reactivates the parent state, they are redirected to the nested state (which was previously activated).
 
-
 ## Overview and Use Case
 
 Deep State Redirect (DSR) is a marker you can add to a state definition.
@@ -31,3 +30,26 @@ If used with a Sticky State, the states will be reactivated, and the DOM will be
 See: http://christopherthielen.github.io/ui-router-extras/#/dsr
 
 TODO: Move docs here
+
+### Using a custom DataStore
+
+By default DSR stores the most recent redirects in memory.
+Alternatively, you can store the redirects in Local Storage using
+[LocalStorageDataStore](https://github.com/ui-router/dsr/blob/master/src/DSRDataStore.ts)
+or create your own DataStore.
+
+When registering the DSRPlugin, pass an options object with a `dataStore` property, i.e.:
+
+```js
+router.plugin(DSRPlugin, { dataStore: new LocalStorageDataStore() });
+```
+
+## Example Builds
+
+The [`/examples` directory](https://github.com/ui-router/dsr/tree/master/examples) contains example setups for:
+
+- Angular-CLI
+- AngularJS + bower + script tags
+- AngularJS + npm + script tags
+- AngularJS + webpack
+- Create-React-App

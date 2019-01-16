@@ -12,27 +12,31 @@ import {
   StateService,
 } from '@uirouter/core';
 
+import { DSRDataStore, StateObjectDataStore } from './DSRDataStore';
 import { _DSRConfig, DSRConfigObj, DSRFunction, DSRProp, ParamPredicate, RecordedDSR } from './interface';
 
 class DSRPlugin implements UIRouterPlugin {
   name = 'deep-state-redirect';
 
+  dataStore: DSRDataStore;
   $transitions: TransitionService;
   $state: StateService;
   hookDeregFns = [];
 
-  constructor($uiRouter: UIRouter) {
+  constructor($uiRouter: UIRouter, options: { dataStore: DSRDataStore }) {
     this.$transitions = $uiRouter.transitionService;
     this.$state = $uiRouter.stateService;
+    this.dataStore = (options && options.dataStore) || new StateObjectDataStore();
+    this.dataStore.init($uiRouter);
 
     this.hookDeregFns.push(
-      this.$transitions.onRetain({ retained: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)),
+      this.$transitions.onRetain({ retained: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this))
     );
     this.hookDeregFns.push(
-      this.$transitions.onEnter({ entering: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this)),
+      this.$transitions.onEnter({ entering: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this))
     );
     this.hookDeregFns.push(
-      this.$transitions.onBefore({ to: state => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this)),
+      this.$transitions.onBefore({ to: state => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this))
     );
   }
 
@@ -58,12 +62,13 @@ class DSRPlugin implements UIRouterPlugin {
   reset(state?: StateOrName, params?: RawParams): void {
     const { $state } = this;
     if (!state) {
-      $state.get().forEach(_state => delete _state.$$state().$dsr);
+      $state.get().forEach(_state => this.dataStore.set(_state, undefined));
     } else if (!params) {
-      delete $state.get(state).$$state().$dsr;
+      this.dataStore.set(state, undefined);
     } else {
+      const currentDSRS = this.dataStore.get(state);
       const $$state = $state.get(state).$$state();
-      $$state.$dsr = ($$state.$dsr as RecordedDSR[]).filter(this.paramsEqual($$state, params, undefined, true));
+      this.dataStore.set(state, currentDSRS.filter(this.paramsEqual($$state, params, undefined, true)));
     }
   }
 
@@ -85,7 +90,7 @@ class DSRPlugin implements UIRouterPlugin {
     return state.deepStateRedirect || state.dsr;
   }
 
-  private getConfig(state: StateDeclaration): _DSRConfig {
+  public getConfig(state: StateDeclaration): _DSRConfig {
     const { $state } = this;
     const dsrProp: DSRProp = this.getDsrProp(state);
     if (typeof dsrProp === 'undefined') return;
@@ -116,11 +121,11 @@ class DSRPlugin implements UIRouterPlugin {
     return { default: defaultTarget, params, fn };
   }
 
-  private paramsEqual(
+  public paramsEqual(
     state: StateObject,
     transParams: RawParams,
     paramPredicate: ParamPredicate = () => true,
-    negate = false,
+    negate = false
   ): (redirect: RecordedDSR) => boolean {
     const schema = state.parameters({ inherit: true }).filter(paramPredicate);
 
@@ -132,26 +137,29 @@ class DSRPlugin implements UIRouterPlugin {
 
   private recordDeepState(transition: Transition, state: StateDeclaration): void {
     const { $state } = this;
-    const paramsConfig = this.getConfig(state).params;
-    const _state = state.$$state();
+    const hasParamsConfig: boolean = !!this.getConfig(state).params;
+    const _state: StateObject = state.$$state();
 
     transition.promise.then(() => {
       const transTo = transition.to();
-      const transParams = transition.params();
-      const recordedDsrTarget = $state.target(transTo, transParams);
+      const triggerParams = transition.params();
+      const target: TargetState = $state.target(transTo, triggerParams);
+      const targetStateName = target.name();
+      const targetParams = target.params();
+      const recordedDSR: RecordedDSR = { triggerParams, targetStateName, targetParams };
 
-      if (paramsConfig) {
-        const recordedDSR = (_state.$dsr as RecordedDSR[]) || [];
-        const predicate = this.paramsEqual(transTo.$$state(), transParams, undefined, true);
-        _state.$dsr = recordedDSR.filter(predicate);
-        _state.$dsr.push({ triggerParams: transParams, target: recordedDsrTarget });
+      if (hasParamsConfig) {
+        const currentDSRS: RecordedDSR[] = this.dataStore.get(_state);
+        const predicate = this.paramsEqual(transTo.$$state(), triggerParams, undefined, true);
+        const updatedDSRS = currentDSRS.filter(predicate).concat(recordedDSR);
+        this.dataStore.set(_state, updatedDSRS);
       } else {
-        _state.$dsr = recordedDsrTarget;
+        this.dataStore.set(_state, [recordedDSR]);
       }
     });
   }
 
-  private deepStateRedirect(transition: Transition) {
+  private deepStateRedirect(transition: Transition): TargetState | undefined {
     const opts = transition.options();
     if (opts['ignoreDsr'] || (opts.custom && opts.custom.ignoreDsr)) return;
 
@@ -165,22 +173,27 @@ class DSRPlugin implements UIRouterPlugin {
     return redirect;
   }
 
+  private getTargetState(dsr: RecordedDSR): TargetState {
+    return this.$state.target(dsr.targetStateName, dsr.targetParams);
+  }
+
   private getDeepStateRedirect(stateOrName: StateOrName, params: RawParams): TargetState {
     const { $state } = this;
     const _state = $state.get(stateOrName);
     const state = _state && _state.$$state();
     const config: _DSRConfig = this.getConfig(_state);
-    let dsrTarget: TargetState;
+    const currentDSRS = this.dataStore.get(stateOrName);
+    let recordedDSR: RecordedDSR;
 
     if (config.params) {
       const predicate = this.paramsEqual(state, params, config.params, false);
-      const match = state.$dsr && (state.$dsr as RecordedDSR[]).filter(predicate)[0];
-      dsrTarget = match && match.target;
+      const match = currentDSRS.find(predicate);
+      recordedDSR = match && match;
     } else {
-      dsrTarget = state.$dsr as TargetState;
+      recordedDSR = currentDSRS[0] && currentDSRS[0];
     }
 
-    dsrTarget = dsrTarget || config.default;
+    let dsrTarget = recordedDSR ? this.getTargetState(recordedDSR) : config.default;
 
     if (dsrTarget) {
       // merge original params with deep state redirect params
