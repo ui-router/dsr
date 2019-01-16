@@ -9,7 +9,7 @@ declare module '@uirouter/core/lib/state/interface' {
 
 declare module '@uirouter/core/lib/state/stateObject' {
   interface StateObject {
-    $dsr: TargetState | RecordedDSR[];
+    $dsr: RecordedDSR[];
   }
 }
 
@@ -35,6 +35,7 @@ export interface _DSRConfig {
 }
 
 export interface RecordedDSR {
-  target: TargetState;
+  targetStateName: string;
+  targetParams: RawParams;
   triggerParams: object;
 }
