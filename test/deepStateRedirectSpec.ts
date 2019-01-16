@@ -115,7 +115,7 @@ describe('deepStateRedirect', function() {
           entered: ['tabs.tabs2', 'tabs.tabs2.deep', 'tabs.tabs2.deep.nest'],
           exited: 'tabs.tabs1',
         },
-        { redirect: 'tabs.tabs2.deep.nest' },
+        { redirect: 'tabs.tabs2.deep.nest' }
       );
 
       done();
@@ -134,7 +134,7 @@ describe('deepStateRedirect', function() {
           entered: ['tabs.tabs2', 'tabs.tabs2.deep', 'tabs.tabs2.deep.nest'],
           exited: ['tabs.tabs1.deep.nest', 'tabs.tabs1.deep', 'tabs.tabs1'],
         },
-        { redirect: 'tabs.tabs2.deep.nest' },
+        { redirect: 'tabs.tabs2.deep.nest' }
       );
       await testGo(
         'tabs.tabs1',
@@ -142,7 +142,7 @@ describe('deepStateRedirect', function() {
           entered: ['tabs.tabs1', 'tabs.tabs1.deep', 'tabs.tabs1.deep.nest'],
           exited: ['tabs.tabs2.deep.nest', 'tabs.tabs2.deep', 'tabs.tabs2'],
         },
-        { redirect: 'tabs.tabs1.deep.nest' },
+        { redirect: 'tabs.tabs1.deep.nest' }
       );
 
       $deepStateRedirect.reset('tabs.tabs2');
@@ -157,7 +157,7 @@ describe('deepStateRedirect', function() {
           entered: ['tabs.tabs1', 'tabs.tabs1.deep', 'tabs.tabs1.deep.nest'],
           exited: ['tabs.tabs2'],
         },
-        { redirect: 'tabs.tabs1.deep.nest' },
+        { redirect: 'tabs.tabs1.deep.nest' }
       );
 
       $deepStateRedirect.reset();
@@ -284,7 +284,7 @@ describe('deepStateRedirect', function() {
           exited: 'tabs.tabs2',
           entered: pathFrom('tabs.tabs1', 'tabs.tabs1.deep.nest'),
         },
-        { redirect: 'tabs.tabs1.deep.nest' },
+        { redirect: 'tabs.tabs1.deep.nest' }
       );
 
       done();

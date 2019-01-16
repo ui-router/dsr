@@ -38,7 +38,11 @@
     "quotemark": [true, "single", "avoid-escape", "jsx-double"],
     "radix": true,
     "semicolon": [true, "always", "ignore-bound-class-methods", "ignore-interfaces"],
+<<<<<<< HEAD
     "trailing-comma": [true],
+=======
+    "trailing-comma": [true, { "multiline": "always", "singleline": "never" }],
+>>>>>>> d78967a... chore(*): update husky@1.3.1, prettier@1.15.3, pretty-quick@1.8.1
     "triple-equals": [true, "allow-null-check"],
     "typedef": ["call-signature", "property-declaration"],
     "typedef-whitespace": [
