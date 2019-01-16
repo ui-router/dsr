@@ -7,7 +7,7 @@
     "build": "npm run compile && rollup -c && rollup -c --environment MINIFY",
     "compile": "npm run clean && tsc && tsc -m es6 --outDir lib-esm",
     "test": "karma start",
-    "test:downstream": "test_downstream_projects --workspace",
+    "test:downstream": "test_downstream_projects",
     "watch": "run-p watch:*",
     "watch:buildjs": "tsc -w",
     "watch:test": "karma start --singleRun=false --autoWatch=true --autoWatchInterval=1",
