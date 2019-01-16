@@ -38,16 +38,21 @@ export class StateObjectDataStore implements DSRDataStore {
 export class LocalStorageDataStore implements DSRDataStore {
   private router: UIRouter;
   private key = 'uiRouterDeepStateRedirect';
+  private _storage: Storage = localStorage;
+
+  constructor(storage?: Storage) {
+    this._storage = storage || localStorage;
+  }
 
   private getStore() {
-    const item = localStorage.getItem(this.key);
+    const item = this._storage.getItem(this.key);
     return JSON.parse(item || '{}');
   }
 
   private setStore(contents: any) {
     if (contents) {
       try {
-        localStorage.setItem(this.key, JSON.stringify(contents));
+        this._storage.setItem(this.key, JSON.stringify(contents));
       } catch (err) {
         console.error(
           'UI-Router Deep State Redirect: cannot store object in LocalStorage.  Is there a circular reference?',
@@ -56,7 +61,7 @@ export class LocalStorageDataStore implements DSRDataStore {
         console.error(err);
       }
     } else {
-      localStorage.removeItem(this.key);
+      this._storage.removeItem(this.key);
     }
   }
 
@@ -80,5 +85,11 @@ export class LocalStorageDataStore implements DSRDataStore {
     const store = this.getStore();
     store[stateName] = recordedDsr;
     this.setStore(store);
+  }
+}
+
+export class SessionStorageDataStore extends LocalStorageDataStore {
+  constructor() {
+    super(sessionStorage);
   }
 }
