@@ -150,7 +150,7 @@ class DSRPlugin implements UIRouterPlugin {
 
       if (hasParamsConfig) {
         const currentDSRS: RecordedDSR[] = this.dataStore.get(_state);
-        const predicate = this.paramsEqual(transTo.$$state(), triggerParams, undefined, true);
+        const predicate = this.paramsEqual(transTo.$$state(), triggerParams, this.getConfig(state).params, true);
         const updatedDSRS = currentDSRS.filter(predicate).concat(recordedDSR);
         this.dataStore.set(_state, updatedDSRS);
       } else {
