@@ -1,3 +1,13 @@
+## 1.1.1 (2019-10-08)
+
+[Compare `@uirouter/dsr` versions 1.1.0 and 1.1.1](https://github.com/ui-router/dsr/compare/1.1.0...1.1.1)
+
+### Bug Fixes
+
+- **examples:** update angular-cli example to uirouter/angular 4.x ([2c0388c](https://github.com/ui-router/dsr/commit/2c0388c))
+- **package:** Change peerDependency on uirouter/core from '^5.0.1' to '>=5.0.1' ([d039187](https://github.com/ui-router/dsr/commit/d039187))
+- **travis:** use service: xvfb instead of launching it manually. install libgconf debian package ([fb48a4a](https://github.com/ui-router/dsr/commit/fb48a4a))
+
 # 1.1.0 (2019-01-16)
 
 [Compare `@uirouter/dsr` versions 1.0.3 and 1.1.0](https://github.com/ui-router/dsr/compare/1.0.3...1.1.0)
