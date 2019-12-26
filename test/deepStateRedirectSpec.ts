@@ -1,13 +1,6 @@
-import { getTestGoFn, addCallbacks, resetTransitionLog, pathFrom } from './util';
-import {
-  UIRouter,
-  StateService,
-  StateDeclaration,
-  servicesPlugin,
-  memoryLocationPlugin,
-  StateParams,
-} from '@uirouter/core';
+import { memoryLocationPlugin, servicesPlugin, StateDeclaration, StateService, UIRouter } from '@uirouter/core';
 import { DSRPlugin } from '../src/dsr';
+import { addCallbacks, getTestGoFn, pathFrom, resetTransitionLog } from './util';
 
 const equalityTester = (first, second) =>
   Object.keys(second).reduce((acc, key) => first[key] == second[key] && acc, true);
@@ -207,6 +200,30 @@ describe('deepStateRedirect', function() {
 
       expect($deepStateRedirect.getRedirect('p1', { param1: 'foo' }).state().name).toBe('p1.child');
       expect($deepStateRedirect.getRedirect('p1', { param1: 'bar' })).toBeUndefined();
+
+      done();
+    });
+
+    // Test for PR #165
+    it('should consider only the params from the dsr configuration', async function(done) {
+      router.stateRegistry.register({
+        name: 'rootState1',
+        url: '/rootstate1/:rootstate1param',
+        deepStateRedirect: {
+          params: ['rootstate1param'],
+        },
+      });
+      router.stateRegistry.register({ name: 'rootState2', url: '/rootstate2/:rootstate2param' });
+      router.stateRegistry.register({ name: 'rootState1.sub1', url: '/sub1' });
+      router.stateRegistry.register({ name: 'rootState1.sub2', url: '/sub2/:sub2param' });
+
+      await $state.go('rootState1.sub1', { rootstate1param: 'rootstate1param' });
+      await $state.go('rootState1.sub2', { rootstate1param: 'rootstate1param', sub2param: 'sub2param' });
+      await $state.go('rootState2', { rootstate2param: 'rootstate2param' });
+      await $state.go('rootState1', { rootstate1param: 'rootstate1param' });
+
+      const targetState = $deepStateRedirect.getRedirect('rootState1', { rootstate1param: 'rootstate1param' });
+      expect(targetState.state().name).toBe('rootState1.sub2');
 
       done();
     });
