@@ -1,3 +1,11 @@
+# 1.2.0 (2019-12-26)
+
+[Compare `@uirouter/dsr` versions 1.1.1 and 1.2.0](https://github.com/ui-router/dsr/compare/1.1.1...1.2.0)
+
+### Bug Fixes
+
+- **params:** When performing DSR with param criteria, only consider the parameters listed in the dsr configuration block ([d073218](https://github.com/ui-router/dsr/commit/d073218))
+
 ## 1.1.1 (2019-10-08)
 
 [Compare `@uirouter/dsr` versions 1.1.0 and 1.1.1](https://github.com/ui-router/dsr/compare/1.1.0...1.1.1)
