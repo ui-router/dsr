@@ -1,6 +1,6 @@
 # Deep State Redirect
 
-### DSR for UI-Router 1.0 &nbsp;[![Build Status](https://travis-ci.org/christopherthielen/deep-state-redirect.svg?branch=master)](https://travis-ci.org/christopherthielen/deep-state-redirect)
+### DSR for UI-Router 1.0 &nbsp;[![Build Status](https://github.com/ui-router/dsr/workflows/CI:%20Deep%20State%20Redirect%20for%20UIRouter/badge.svg)](https://github.com/ui-router/dsr/actions?query=workflow%3A%22CI%3A+Deep+State+Redirect+for+UIRouter%22)
 
 With Deep State Redirect, a parent state remembers whatever child state was last activated.
 When the user directly reactivates the parent state, they are redirected to the nested state (which was previously activated).
