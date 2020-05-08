@@ -2,7 +2,7 @@
 name: Weekly Dependency Bumps
 on:
   schedule:
-    - cron: '38 03 * * 5'
+    - cron: '52 03 * * 5'
 
 jobs:
   upgrade-dependencies:
@@ -29,7 +29,9 @@ jobs:
         if: ${{ steps.upgrade.outputs.upgrades != '' }}
         # the following hash is from https://github.com/peter-evans/create-pull-request/releases/tag/v2.7.0
         uses: peter-evans/create-pull-request@340e629d2f63059fb3e3f15437e92cfbc7acd85b
-        with:
+        with:          
+          token: ${{ secrets.UIROUTERBOT_PAT }}
+          request-on-parent: true
           branch-suffix: 'random'
           commit-message: 'chore(package): Update ${{ steps.upgrade.outputs.upgrade-count }} ${{ matrix.deptype }} to ${{ steps.upgrade.outputs.upgrade-strategy }}: ${{ steps.upgrade.outputs.upgrades }}'
           title: 'chore(package): Weekly ${{ matrix.deptype }} bump (latest: ${{ matrix.latest }})'
