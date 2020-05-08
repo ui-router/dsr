@@ -2,7 +2,7 @@
 name: Weekly Dependency Bumps
 on:
   schedule:
-    - cron: '5 20 * * 5'
+    - cron: '25 21 * * 5'
 
 jobs:
   upgrade-dependencies:
@@ -21,6 +21,7 @@ jobs:
           git remote set-url origin $(git remote get-url origin | sed -e 's/ui-router/uirouterbot/')
           git fetch --unshallow -p origin
       - name: Upgrade dependencies
+        if: ${{ steps.upgrade.outputs.upgrades != '' }}
         id: upgrade
         uses: ui-router/publish-scripts/actions/upgrade@actions-upgrade-v1.0.2
         with:
@@ -49,14 +50,14 @@ jobs:
 
             [1]: https://github.com/peter-evans/create-pull-request
       - name: Apply Merge Label
-        if: ${{ steps.upgrade.outputs.upgrades != '' }}
+        if: ${{ steps.cpr.outputs.pr_number != '' }}
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{ secrets.UIROUTERBOT_PAT }}
           script: |
             await github.issues.addLabels({
-              context.repo.owner,
-              context.repo.repo,
-              ${{ steps.cpr.outputs.pr_number }},
-              ['ready to squash and merge'],
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.cpr.outputs.pr_number }},
+              labels: ['ready to squash and merge']
             });
