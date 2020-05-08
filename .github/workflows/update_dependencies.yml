@@ -2,7 +2,7 @@
 name: Weekly Dependency Bumps
 on:
   schedule:
-    - cron: '42 19 * * 5'
+    - cron: '5 20 * * 5'
 
 jobs:
   upgrade-dependencies:
@@ -57,6 +57,6 @@ jobs:
             await github.issues.addLabels({
               context.repo.owner,
               context.repo.repo,
-              ${{ steps.cpr.outputs.pull_number }},
+              ${{ steps.cpr.outputs.pr_number }},
               ['ready to squash and merge'],
             });
