@@ -2,7 +2,7 @@
 name: Weekly Dependency Bumps
 on:
   schedule:
-    - cron: '25 21 * * 5'
+    - cron: '33 21 * * 5'
 
 jobs:
   upgrade-dependencies:
@@ -20,8 +20,7 @@ jobs:
           git config user.password ${{ secrets.UIROUTERBOT_PAT }}
           git remote set-url origin $(git remote get-url origin | sed -e 's/ui-router/uirouterbot/')
           git fetch --unshallow -p origin
-      - name: Upgrade dependencies
-        if: ${{ steps.upgrade.outputs.upgrades != '' }}
+      - name: Update dependencies
         id: upgrade
         uses: ui-router/publish-scripts/actions/upgrade@actions-upgrade-v1.0.2
         with:
