@@ -1,6 +1,6 @@
 name: 'CI: Deep State Redirect for UIRouter'
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
