@@ -22,7 +22,7 @@ jobs:
           git fetch --unshallow -p origin
       - name: Update dependencies
         id: upgrade
-        uses: ui-router/publish-scripts/actions/upgrade@actions-upgrade-v1.0.2
+        uses: ui-router/publish-scripts/actions/upgrade@actions-upgrade-v1.0.3
         with:
           exclude: ${{ matrix.excludes }}
           deptype: ${{ matrix.deptype }}
