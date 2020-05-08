@@ -2,7 +2,7 @@
 name: Weekly Dependency Bumps
 on:
   schedule:
-    - cron: '52 03 * * 5'
+    - cron: '15 17 * * 5'
 
 jobs:
   upgrade-dependencies:
@@ -10,11 +10,12 @@ jobs:
     name: Upgrade dependencies
     strategy:
       matrix:
-        deptype: ['devDependencies']
+        deptype: ['dependencies', 'devDependencies']
         latest: [true, false]
     steps:
       - uses: actions/checkout@v2
       - run: |
+          git config user.name uirouterbot
           git config user.password ${{ secrets.UIROUTERBOT_PAT }}
           git remote set-url origin $(git remote get-url origin | sed -e 's/ui-router/uirouterbot/')
           git fetch --unshallow -p origin
@@ -31,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@340e629d2f63059fb3e3f15437e92cfbc7acd85b
         with:          
           token: ${{ secrets.UIROUTERBOT_PAT }}
-          request-on-parent: true
+          request-to-parent: true
           branch-suffix: 'random'
           commit-message: 'chore(package): Update ${{ steps.upgrade.outputs.upgrade-count }} ${{ matrix.deptype }} to ${{ steps.upgrade.outputs.upgrade-strategy }}: ${{ steps.upgrade.outputs.upgrades }}'
           title: 'chore(package): Weekly ${{ matrix.deptype }} bump (latest: ${{ matrix.latest }})'
