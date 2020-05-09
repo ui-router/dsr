@@ -4,6 +4,9 @@ on: [push, pull_request]
 jobs:
   ci:
     needs: [test, downstream]
+    runs-on: ubuntu-latest
+    steps:
+      - run: true
   test:
     name: yarn ${{ matrix.yarncmd }}
     runs-on: ubuntu-latest
