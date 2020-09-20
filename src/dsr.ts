@@ -30,18 +30,21 @@ class DSRPlugin implements UIRouterPlugin {
     this.dataStore.init($uiRouter);
 
     this.hookDeregFns.push(
-      this.$transitions.onRetain({ retained: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this))
+      this.$transitions.onRetain(
+        { retained: (state) => !!this.getDsrProp(state.self) },
+        this.recordDeepState.bind(this)
+      )
     );
     this.hookDeregFns.push(
-      this.$transitions.onEnter({ entering: state => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this))
+      this.$transitions.onEnter({ entering: (state) => !!this.getDsrProp(state.self) }, this.recordDeepState.bind(this))
     );
     this.hookDeregFns.push(
-      this.$transitions.onBefore({ to: state => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this))
+      this.$transitions.onBefore({ to: (state) => !!this.getDsrProp(state.self) }, this.deepStateRedirect.bind(this))
     );
   }
 
-  dispose(router: UIRouter): void {
-    this.hookDeregFns.forEach(fn => fn());
+  dispose(_router: UIRouter): void {
+    this.hookDeregFns.forEach((fn) => fn());
   }
 
   /**
@@ -62,7 +65,7 @@ class DSRPlugin implements UIRouterPlugin {
   reset(state?: StateOrName, params?: RawParams): void {
     const { $state } = this;
     if (!state) {
-      $state.get().forEach(_state => this.dataStore.set(_state, undefined));
+      $state.get().forEach((_state) => this.dataStore.set(_state, undefined));
     } else if (!params) {
       this.dataStore.set(state, undefined);
     } else {
@@ -137,7 +140,7 @@ class DSRPlugin implements UIRouterPlugin {
 
   private recordDeepState(transition: Transition, state: StateDeclaration): void {
     const { $state } = this;
-    const hasParamsConfig: boolean = !!this.getConfig(state).params;
+    const hasParamsConfig = !!this.getConfig(state).params;
     const _state: StateObject = state.$$state();
 
     transition.promise.then(() => {
