@@ -37,5 +37,5 @@ export interface _DSRConfig {
 export interface RecordedDSR {
   targetStateName: string;
   targetParams: RawParams;
-  triggerParams: object;
+  triggerParams: Record<string, unknown>;
 }
