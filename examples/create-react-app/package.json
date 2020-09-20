@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@uirouter/react": "^0.6.2",
     "@uirouter/dsr": "^1.0.2",
-    "@uirouter/visualizer": "^6.0.0",
+    "@uirouter/react": "^1.0.3",
+    "@uirouter/visualizer": "^7.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   },
   "devDependencies": {
     "@uirouter/cypress-runner": "^1.0.2",
-    "react-scripts": "1.1.1"
+    "fibers": "5.0.0",
+    "node-sass": "4.14.1",
+    "react-scripts": "3.4.3",
+    "sass": "1.26.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,5 +22,17 @@
     "test": "npm run build && cypress-runner run --path build",
     "test:open": "npm run build && cypress-runner open --path build",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
