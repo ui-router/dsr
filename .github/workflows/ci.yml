@@ -6,6 +6,9 @@ on:
       - master
   pull_request:
 
+env:
+  NODE_OPTIONS: --openssl-legacy-provider
+
 jobs:
   ci:
     needs: [test, downstream]
@@ -34,7 +37,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Prepare to Test Downstream Projects
         run: |
-          npm config set scripts-prepend-node-path auto
           git config --global user.email uirouter@github.actions
           git config --global user.name uirouter_github_actions
       - name: Install Dependencies
