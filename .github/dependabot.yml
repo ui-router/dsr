@@ -1,0 +1,72 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "07:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pretty-quick
+    versions:
+    - 3.1.0
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.14.0
+    - 4.14.1
+    - 4.14.2
+    - 4.15.0
+    - 4.15.1
+    - 4.15.2
+    - 4.16.1
+    - 4.17.0
+    - 4.18.0
+    - 4.19.0
+    - 4.20.0
+    - 4.21.0
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.14.0
+    - 4.14.1
+    - 4.14.2
+    - 4.15.0
+    - 4.15.1
+    - 4.15.2
+    - 4.16.1
+    - 4.17.0
+    - 4.18.0
+    - 4.19.0
+    - 4.20.0
+    - 4.21.0
+  - dependency-name: rollup
+    versions:
+    - 2.38.0
+    - 2.38.3
+    - 2.38.5
+    - 2.39.0
+    - 2.40.0
+    - 2.41.2
+    - 2.42.2
+    - 2.43.1
+    - 2.44.0
+    - 2.45.1
+  - dependency-name: husky
+    versions:
+    - 4.3.8
+    - 5.0.9
+    - 5.1.0
+    - 5.1.2
+    - 5.1.3
+    - 5.2.0
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+    - 4.1.5
+    - 4.2.2
+    - 4.2.3
+  - dependency-name: node-notifier
+    versions:
+    - 8.0.1
+  - dependency-name: prettier
+    versions:
+    - 2.2.1
