@@ -4,8 +4,9 @@
   "description": "AngularJS/webpack sticky states example",
   "main": "index.js",
   "scripts": {
-    "test": "npm run build && cypress-runner run --path .",
-    "test:open": "npm run build && cypress-runner open --path .",
+    "postinstall": "npx playwright install chromium",
+    "test": "npm run build && npx playwright test",
+    "test:ui": "npm run build && npx playwright test --ui",
     "build": "webpack --progress",
     "start": "webpack-dev-server --progress --open"
   },
@@ -18,9 +19,10 @@
     "angular": "^1.6.8"
   },
   "devDependencies": {
-    "@uirouter/cypress-runner": "^1.0.2",
+    "@playwright/test": "^1.40.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "serve": "^14.2.0",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.10.1"
   }

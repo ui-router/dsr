@@ -10,8 +10,9 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@uirouter/cypress-runner": "^1.0.2",
-    "react-scripts": "5.0.1"
+    "@playwright/test": "^1.40.0",
+    "react-scripts": "5.0.1",
+    "serve": "^14.2.0"
   },
   "checkPeerDependencies": {
     "ignore": [
@@ -22,10 +23,11 @@
     ]
   },
   "scripts": {
+    "postinstall": "npx playwright install chromium",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "npm run build && cypress-runner run --path build",
-    "test:open": "npm run build && cypress-runner open --path build",
+    "test": "npm run build && npx playwright test",
+    "test:ui": "npm run build && npx playwright test --ui",
     "eject": "react-scripts eject"
   }
 }

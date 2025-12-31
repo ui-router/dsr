@@ -4,10 +4,11 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "postinstall": "npx playwright install chromium",
     "start": "ng serve",
     "build": "ng build --prod",
-    "test": "npm run build && cypress-runner run --path dist",
-    "test:open": "npm run build && cypress-runner open --path dist",
+    "test": "npm run build && npx playwright test",
+    "test:ui": "npm run build && npx playwright test --ui",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -36,10 +37,10 @@
     "@angular/cli": "^7.2.1",
     "@angular/compiler-cli": "^7.2.0",
     "@angular/language-service": "^7.2.0",
+    "@playwright/test": "^1.40.0",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~9.6.1",
-    "@uirouter/cypress-runner": "^1.0.2",
     "codelyzer": "^4.0.1",
     "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -50,6 +51,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^1.0.0",
     "protractor": "~5.3.0",
+    "serve": "^14.2.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
     "typescript": "~3.2.2"

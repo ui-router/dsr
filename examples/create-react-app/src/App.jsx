@@ -2,22 +2,18 @@ import React, { Component } from 'react';
 import { UIRouter, UISref, UISrefActive, UIView } from '@uirouter/react';
 import { pushStateLocationPlugin } from '@uirouter/core';
 import { Visualizer } from '@uirouter/visualizer';
-import { DSRPlugin } from "@uirouter/dsr";
+import { DSRPlugin } from '@uirouter/dsr';
 
-import { ContinentList } from "./ContinentList";
-import { CountryList } from "./CountryList";
-import { About } from "./About";
-import { CountryDetail } from "./CountryDetail";
+import { ContinentList } from './ContinentList';
+import { CountryList } from './CountryList';
+import { About } from './About';
+import { CountryDetail } from './CountryDetail';
 
-import { getContinents, getCountries } from "./data.api";
+import { getContinents, getCountries } from './data.api';
 
 import './App.css';
 
-const plugins = [
-  pushStateLocationPlugin,
-  Visualizer,
-  DSRPlugin,
-];
+const plugins = [pushStateLocationPlugin, Visualizer, DSRPlugin];
 
 export const states = [
   {
@@ -26,7 +22,7 @@ export const states = [
     dsr: true,
     component: ContinentList,
     resolve: {
-      'continents': () => getContinents(),
+      continents: () => getContinents(),
     },
   },
 
@@ -35,7 +31,7 @@ export const states = [
     url: '/:continent',
     component: CountryList,
     resolve: {
-      'countries': ['$transition$', ($transition$) => getCountries($transition$.params().continent)],
+      countries: ['$transition$', ($transition$) => getCountries($transition$.params().continent)],
     },
   },
 
@@ -44,7 +40,7 @@ export const states = [
     url: '/:country',
     component: CountryDetail,
     resolve: {
-      'country': ['$transition$', ($transition$) => $transition$.params().country],
+      country: ['$transition$', ($transition$) => $transition$.params().country],
     },
   },
 
@@ -64,17 +60,21 @@ class App extends Component {
   render() {
     return (
       <UIRouter plugins={plugins} states={states} config={routerConfig}>
-        <div>
+        <nav data-testid="navigation">
           <UISrefActive class="active">
-            <UISref to="about"><a>about</a></UISref>
+            <UISref to="about">
+              <a>about</a>
+            </UISref>
           </UISrefActive>
 
           <UISrefActive class="active">
-            <UISref to="continentlist"><a>continentlist</a></UISref>
+            <UISref to="continentlist">
+              <a>continentlist</a>
+            </UISref>
           </UISrefActive>
+        </nav>
 
-          <UIView/>
-        </div>
+        <UIView />
       </UIRouter>
     );
   }
