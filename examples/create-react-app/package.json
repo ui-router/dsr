@@ -3,15 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@uirouter/react": "^0.6.2",
+    "@uirouter/react": "^1.0.7",
     "@uirouter/dsr": "^1.0.2",
-    "@uirouter/visualizer": "^6.0.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "@uirouter/visualizer": "^7.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@uirouter/cypress-runner": "^1.0.2",
-    "react-scripts": "1.1.1"
+    "react-scripts": "5.0.1"
+  },
+  "checkPeerDependencies": {
+    "ignore": [
+      "ajv",
+      "picomatch",
+      "typescript",
+      "yaml"
+    ]
   },
   "scripts": {
     "start": "react-scripts start",
