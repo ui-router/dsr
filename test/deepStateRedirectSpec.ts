@@ -65,7 +65,7 @@ let $deepStateRedirect = undefined;
 let testGo = undefined;
 
 describe('deepStateRedirect', function () {
-  beforeEach(async function (done) {
+  beforeEach(async function () {
     router = new UIRouter();
     router.plugin(servicesPlugin);
     router.plugin(memoryLocationPlugin);
@@ -79,20 +79,16 @@ describe('deepStateRedirect', function () {
     const newStates = getDSRStates();
     dsrReset(newStates);
     newStates.forEach((state) => router.stateRegistry.register(state));
-
-    done();
   });
 
   describe(' - ', function () {
-    it('should toggle between tab states', async function (done) {
+    it('should toggle between tab states', async function () {
       await testGo('tabs', { entered: 'tabs' });
       await testGo('tabs.tabs2', { entered: 'tabs.tabs2' });
       await testGo('tabs.tabs1', { entered: 'tabs.tabs1', exited: 'tabs.tabs2' });
-
-      done();
     });
 
-    it('should redirect to tabs.tabs1.deep.nest', async function (done) {
+    it('should redirect to tabs.tabs1.deep.nest', async function () {
       await testGo('tabs', { entered: 'tabs' });
       await testGo('tabs.tabs2.deep.nest', { entered: ['tabs.tabs2', 'tabs.tabs2.deep', 'tabs.tabs2.deep.nest'] });
       await testGo('tabs.tabs1', {
@@ -107,11 +103,9 @@ describe('deepStateRedirect', function () {
         },
         { redirect: 'tabs.tabs2.deep.nest' }
       );
-
-      done();
     });
 
-    it('should forget a previous redirect to tabs.tabs2.deep.nest', async function (done) {
+    it('should forget a previous redirect to tabs.tabs2.deep.nest', async function () {
       await testGo('tabs', { entered: 'tabs' });
       await testGo('tabs.tabs2.deep.nest', { entered: ['tabs.tabs2', 'tabs.tabs2.deep', 'tabs.tabs2.deep.nest'] });
       await testGo('tabs.tabs1.deep.nest', {
@@ -157,23 +151,19 @@ describe('deepStateRedirect', function () {
         exited: ['tabs.tabs1.deep.nest', 'tabs.tabs1.deep', 'tabs.tabs1'],
       });
       await testGo('tabs.tabs1', { entered: 'tabs.tabs1', exited: ['tabs.tabs2'] });
-
-      done();
     });
   });
 
   describe('with child substates configured using {parent: parentState}', function () {
-    it('should remember and redirect to the last deepest state', async function (done) {
+    it('should remember and redirect to the last deepest state', async function () {
       await testGo('p8child1');
       await testGo('other');
       await testGo('p8', undefined, { redirect: 'p8child1' });
-
-      done();
     });
   });
 
   describe('with configured params', function () {
-    it('should redirect only when params match', async function (done) {
+    it('should redirect only when params match', async function () {
       await $state.go('p1', { param1: 'foo', param2: 'foo2' });
       expect($state.current.name).toEqual('p1');
       expect($state.params).toEqual({ '#': null, param1: 'foo', param2: 'foo2' } as any);
@@ -186,23 +176,19 @@ describe('deepStateRedirect', function () {
 
       await $state.go('p1', { param1: 'foo', param2: 'somethingelse' });
       expect($state.current.name).toEqual('p1.child'); // DSR
-
-      done();
     });
 
     // Test for issue #184 getRedirect()
-    it('should be returned from getRedirect() for matching DSR params', async function (done) {
+    it('should be returned from getRedirect() for matching DSR params', async function () {
       await $state.go('p1', { param1: 'foo', param2: 'foo2' });
       await $state.go('.child');
 
       expect($deepStateRedirect.getRedirect('p1', { param1: 'foo' }).state().name).toBe('p1.child');
       expect($deepStateRedirect.getRedirect('p1', { param1: 'bar' })).toBeUndefined();
-
-      done();
     });
 
     // Test for PR #165
-    it('should consider only the params from the dsr configuration', async function (done) {
+    it('should consider only the params from the dsr configuration', async function () {
       router.stateRegistry.register({
         name: 'rootState1',
         url: '/rootstate1/:rootstate1param',
@@ -221,11 +207,9 @@ describe('deepStateRedirect', function () {
 
       const targetState = $deepStateRedirect.getRedirect('rootState1', { rootstate1param: 'rootstate1param' });
       expect(targetState.state().name).toBe('rootState1.sub2');
-
-      done();
     });
 
-    it('should not redirect if a param is resetted', async function (done) {
+    it('should not redirect if a param is resetted', async function () {
       await $state.go('p3', { param1: 'foo' });
       await $state.go('.child');
       await $state.go('p3', { param1: 'bar' });
@@ -238,11 +222,9 @@ describe('deepStateRedirect', function () {
 
       await $state.go('p3', { param1: 'bar' });
       expect($state.current.name).toEqual('p3.child'); // DSR
-
-      done();
     });
 
-    it("should redirect only when all params match if 'params: true'", async function (done) {
+    it("should redirect only when all params match if 'params: true'", async function () {
       await $state.go('p2', { param1: 'foo', param2: 'foo2' });
 
       expect($state.current.name).toEqual('p2');
@@ -259,13 +241,11 @@ describe('deepStateRedirect', function () {
 
       await $state.go('p2', { param1: 'foo', param2: 'foo2' });
       expect($state.current.name).toEqual('p2.child'); // DSR
-
-      done();
     });
   });
 
   describe('ignoreDsr option', function () {
-    it('should not redirect to tabs.tabs2.deep.nest when options are: { ignoreDsr: true }', async function (done) {
+    it('should not redirect to tabs.tabs2.deep.nest when options are: { ignoreDsr: true }', async function () {
       await testGo('tabs', { entered: 'tabs' });
       await testGo('tabs.tabs2.deep.nest', { entered: pathFrom('tabs.tabs2', 'tabs.tabs2.deep.nest') });
       await testGo('tabs.tabs1.deep.nest', {
@@ -275,11 +255,9 @@ describe('deepStateRedirect', function () {
       await $state.go('tabs.tabs2', {}, { custom: { ignoreDsr: true } });
 
       expect($state.current.name).toBe('tabs.tabs2');
-
-      done();
     });
 
-    it('should redirect to tabs.tabs2.deep.nest after a previous ignoreDsr transition', async function (done) {
+    it('should redirect to tabs.tabs2.deep.nest after a previous ignoreDsr transition', async function () {
       await testGo('tabs', { entered: 'tabs' });
       await testGo('tabs.tabs2.deep.nest', { entered: pathFrom('tabs.tabs2', 'tabs.tabs2.deep.nest') });
       await testGo('tabs.tabs1.deep.nest', {
@@ -300,11 +278,9 @@ describe('deepStateRedirect', function () {
         },
         { redirect: 'tabs.tabs1.deep.nest' }
       );
-
-      done();
     });
 
-    it('should remember the DSR state itself when transitioned to using ignoreDsr ', async function (done) {
+    it('should remember the DSR state itself when transitioned to using ignoreDsr ', async function () {
       await testGo('tabs.tabs1.deep', { entered: pathFrom('tabs', 'tabs.tabs1.deep') });
       await testGo('tabs.tabs2', { entered: 'tabs.tabs2', exited: pathFrom('tabs.tabs1.deep', 'tabs.tabs1') });
 
@@ -317,8 +293,6 @@ describe('deepStateRedirect', function () {
       await $state.go('tabs.tabs1', {}, {});
 
       expect($state.current.name).toBe('tabs.tabs1');
-
-      done();
     });
   });
 
@@ -328,47 +302,37 @@ describe('deepStateRedirect', function () {
       expect($deepStateRedirect.getRedirect('p4').state().name).toBe('p4.child');
     });
 
-    it('should affect the first transition to the DSR state', async function (done) {
+    it('should affect the first transition to the DSR state', async function () {
       await testGo('p4', undefined, { redirect: 'p4.child' });
       await testGo('p4.child2');
       await testGo('p4', undefined, { redirect: 'p4.child2' });
-
-      done();
     });
 
-    it('should provide default parameters', async function (done) {
+    it('should provide default parameters', async function () {
       await testGo('p5', undefined, { redirect: 'p5.child' });
       expect($state.params).toEqual({ p5param: '1', '#': null } as any);
-
-      done();
     });
 
-    it('should redirect to the default state when params: true and transition to DSR with un-seen param values', async function (done) {
+    it('should redirect to the default state when params: true and transition to DSR with un-seen param values', async function () {
       await testGo('p6', undefined, { params: { param: '1' }, redirect: 'p6.child1' });
       await testGo('p6.child2');
       await testGo('p6', undefined, { params: { param: '1' }, redirect: 'p6.child2' });
       // await testGo("p6", undefined, { params: { param: "2" }, redirect: 'p6.child1' });
-
-      done();
     });
 
     describe('in conjunction with a dsr fn', function () {
-      it('should still invoke the dsr fn and use the result', async function (done) {
+      it('should still invoke the dsr fn and use the result', async function () {
         // This effectively allows a function to determine DSR default
         await testGo('p7', undefined, { params: { param: '2' }, redirect: 'p7.child2' });
         await testGo('p7.child1');
         await testGo('p7', undefined, { params: { param: '2' }, redirect: 'p7.child1' });
-
-        done();
       });
 
-      it('should still invoke the dsr fn and use the result', async function (done) {
+      it('should still invoke the dsr fn and use the result', async function () {
         // This effectively allows the default DSR to be determined by a fn
         await testGo('p7', undefined, { redirect: 'p7.child1' });
         await testGo('p1');
         await testGo('p7', undefined, { params: { param: '2' }, redirect: 'p7.child1' });
-
-        done();
       });
     });
   });
