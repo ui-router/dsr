@@ -54,8 +54,6 @@
     "@typescript-eslint/parser": "^4.1.1",
     "@uirouter/core": "^6.0.5",
     "@uirouter/publish-scripts": "^2.5.4",
-    "bufferutil": "^4.0.1",
-    "canvas": "^2.5.0",
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -69,8 +67,7 @@
     "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-uglify": "^6.0.1",
     "ts-jest": "^26.4.0",
-    "typescript": "^3.9.3",
-    "utf-8-validate": "^5.0.2"
+    "typescript": "^5.9.3"
   },
   "husky": {
     "hooks": {
