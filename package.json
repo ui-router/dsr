@@ -4,7 +4,7 @@
   "version": "1.2.0",
   "scripts": {
     "clean": "shx rm -rf lib lib-esm _bundles",
-    "build": "npm run compile && rollup -c && rollup -c --environment MINIFY",
+    "build": "npm run compile && rollup -c rollup.config.mjs && rollup -c rollup.config.mjs --environment MINIFY",
     "compile": "npm run clean && tsc && tsc -m es6 --outDir lib-esm",
     "test": "jest",
     "test:downstream": "test_downstream_projects",
@@ -47,6 +47,8 @@
     "@uirouter/core": ">=5.0.0"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/jest": "^30.0.0",
     "@types/jquery": "^3.3.38",
     "@types/lodash": "^4.14.152",
@@ -63,10 +65,7 @@
     "lodash": "^4.17.11",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
-    "rollup": "^2.10.9",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-sourcemaps": "^0.6.2",
-    "rollup-plugin-uglify": "^6.0.1",
+    "rollup": "^4.54.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   },
