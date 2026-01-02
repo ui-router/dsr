@@ -6,12 +6,11 @@
     "clean": "shx rm -rf lib lib-esm _bundles",
     "build": "npm run compile && rollup -c rollup.config.mjs && rollup -c rollup.config.mjs --environment MINIFY",
     "compile": "npm run clean && tsc && tsc -m es6 --outDir lib-esm",
-    "test": "jest",
+    "test": "vitest run",
     "test:downstream": "test_downstream_projects",
     "watch": "run-p watch:*",
     "watch:buildjs": "tsc -w",
-    "watch:test": "jest --watch",
-    "debug": "node --inspect ./node_modules/.bin/jest --runInBand --watch",
+    "watch:test": "vitest",
     "changelog": "update_changelog",
     "release": "release",
     "prepublishOnly": "npm run build"
@@ -52,7 +51,6 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@types/jest": "^30.0.0",
     "@types/jquery": "^3.3.38",
     "@types/lodash": "^4.14.152",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
@@ -63,14 +61,13 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^26.1.0",
     "lodash": "^4.17.11",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
     "rollup": "^4.54.0",
-    "ts-jest": "^29.4.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "husky": {
     "hooks": {
