@@ -36,7 +36,7 @@
     "url": "https://github.com/ui-router/dsr/issues"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=18.0.0"
   },
   "jsnext:main": "lib-esm/index.js",
   "main": "lib/index.js",
@@ -51,27 +51,17 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@types/jquery": "^3.3.38",
-    "@types/lodash": "^4.14.152",
-    "@typescript-eslint/eslint-plugin": "^4.1.1",
-    "@typescript-eslint/parser": "^4.1.1",
-    "@uirouter/core": "^6.0.5",
-    "@uirouter/publish-scripts": "^2.6.6",
-    "eslint": "^7.9.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.2.5",
+    "@types/lodash": "^4.17.0",
+    "@uirouter/core": "^6.1.0",
+    "@uirouter/publish-scripts": "^2.6.8",
     "jsdom": "^26.1.0",
-    "lodash": "^4.17.11",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
+    "lodash": "^4.17.21",
+    "prettier": "^3.4.0",
     "rollup": "^4.54.0",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
+  "checkPeerDependencies": {
+    "ignore": []
   }
 }
