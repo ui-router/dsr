@@ -4,12 +4,12 @@
   "version": "1.2.0",
   "scripts": {
     "clean": "shx rm -rf lib lib-esm _bundles",
-    "build": "npm run compile && rollup -c rollup.config.mjs && rollup -c rollup.config.mjs --environment MINIFY",
-    "compile": "npm run clean && tsc && tsc -m es6 --outDir lib-esm",
+    "build": "npm run compile && rolldown -c rolldown.config.mjs && rolldown -c rolldown.config.mjs --environment MINIFY",
+    "compile": "npm run clean && tsgo && tsgo -m es6 --outDir lib-esm",
     "test": "vitest run",
     "test:downstream": "test_downstream_projects",
     "watch": "run-p watch:*",
-    "watch:buildjs": "tsc -w",
+    "watch:buildjs": "tsgo -w",
     "watch:test": "vitest",
     "changelog": "update_changelog",
     "release": "release",
@@ -45,20 +45,15 @@
   "peerDependencies": {
     "@uirouter/core": ">=5.0.0"
   },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.54.0"
-  },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^0.4.4",
     "@types/lodash": "^4.17.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260101.1",
     "@uirouter/core": "^6.1.0",
     "@uirouter/publish-scripts": "^2.6.8",
     "jsdom": "^26.1.0",
     "lodash": "^4.17.21",
     "prettier": "^3.4.0",
-    "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "rolldown": "^1.0.0-beta.58",
     "vitest": "^3.2.4"
   },
   "checkPeerDependencies": {
