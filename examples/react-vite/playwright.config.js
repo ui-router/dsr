@@ -1,7 +1,7 @@
 // @ts-check
-const { defineConfig } = require('@playwright/test');
+import { defineConfig } from '@playwright/test';
 
-module.exports = defineConfig({
+export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -13,7 +13,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npx serve -l 4000 build',
+    command: 'npx serve -l 4000 -s dist',
     url: 'http://localhost:4000',
     reuseExistingServer: !process.env.CI,
   },
