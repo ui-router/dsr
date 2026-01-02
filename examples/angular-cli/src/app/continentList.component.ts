@@ -13,5 +13,5 @@ import { Input, Component } from '@angular/core';
   `,
 })
 export class ContinentListComponent {
-  @Input() continents: string[];
+  @Input() continents: string[] = [];
 }
