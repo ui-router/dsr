@@ -16,7 +16,7 @@ export const states = [
     dsr: true,
     component: 'continentList',
     resolve: {
-      'continents': () => getContinents(),
+      continents: () => getContinents(),
     },
   },
 
@@ -25,7 +25,7 @@ export const states = [
     url: '/:continent',
     component: 'countryList',
     resolve: {
-      'countries': ($transition$) => getCountries($transition$.params().continent),
+      countries: ['$transition$', ($transition$) => getCountries($transition$.params().continent)],
     },
   },
 
@@ -34,7 +34,7 @@ export const states = [
     url: '/:country',
     component: 'countryDetail',
     resolve: {
-      'country': ($transition$) => $transition$.params().country,
+      country: ['$transition$', ($transition$) => $transition$.params().country],
     },
   },
 
@@ -45,13 +45,16 @@ export const states = [
   },
 ];
 
-APP_MODULE.config(function ($uiRouterProvider) {
-  $uiRouterProvider.plugin(DSRPlugin);
-  $uiRouterProvider.plugin(Visualizer);
+APP_MODULE.config([
+  '$uiRouterProvider',
+  function ($uiRouterProvider) {
+    $uiRouterProvider.plugin(DSRPlugin);
+    $uiRouterProvider.plugin(Visualizer);
 
-  // Add states
-  states.forEach(state => $uiRouterProvider.stateRegistry.register(state));
+    // Add states
+    states.forEach((state) => $uiRouterProvider.stateRegistry.register(state));
 
-  // Set initial state
-  $uiRouterProvider.urlService.rules.initial({ state: 'about' });
-});
+    // Set initial state
+    $uiRouterProvider.urlService.rules.initial({ state: 'about' });
+  },
+]);
