@@ -11,12 +11,12 @@ export class CountryDetail extends React.Component {
     const alt = `flag of ${country}}`;
 
     return (
-        <div>
-          <h3>{country}</h3>
-          <div style={{ height: '100px' }}>
-            <img src={imgSrc} alt={alt}/>
-          </div>
+      <div>
+        <h3>{country}</h3>
+        <div style={{ height: '100px' }}>
+          <img src={imgSrc} alt={alt} />
         </div>
-    )
+      </div>
+    );
   }
 }
