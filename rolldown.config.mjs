@@ -1,5 +1,3 @@
-import nodeResolve from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
 import { readFileSync } from 'fs';
 
 const MINIFY = process.env.MINIFY;
@@ -11,17 +9,6 @@ const banner = `/**
  * @link ${pkg.homepage}
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */`;
-
-const terserOpts = {
-  output: {
-    // retain multiline comment with @license
-    comments: (node, comment) => comment.type === 'comment2' && /@license/i.test(comment.value),
-  },
-};
-
-const plugins = [nodeResolve()];
-
-if (MINIFY) plugins.push(terser(terserOpts));
 
 const extension = MINIFY ? '.min.js' : '.js';
 
@@ -35,7 +22,8 @@ export default {
     exports: 'named',
     banner: banner,
     file: '_bundles/ui-router-dsr' + extension,
+    minify: !!MINIFY,
   },
   external: ['@uirouter/core'],
-  plugins: plugins,
 };
+
